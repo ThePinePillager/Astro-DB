@@ -3,6 +3,7 @@
 ## Preliminary Information
 
 We're constructing a prototype for a Mongo database that can handle 100 million event data insertions a night while maintaining fast cone search speeds. To achieve this, we're testing database sharding strategies and the utility of the 2dsphere index.
+To shard a database in MongoDB, one must specify a shard key, which must correspond to an index on that database. The 2dsphere index and the sharding index are different indexes with different goals. The 2dsphere index maps event locations on a sphere, which is useful for cone searches.
 
 ## Cone Searches
 
@@ -26,24 +27,18 @@ As the radius (in radians of the sphere we're searching on) of the cone search i
 
 ## Writes
 
-Data in this section isn't likely indicative of sharded database performance when shards are distributed across multiple machines. All shards for each database live on a single SSD connected to a single laptop, which partially defeats the point of sharding a database.
+Because all shards reside on a single laptop SSD, insertion data in this section does not reflect real-world, multi-machine sharded performance.
 
 <img width="800" height="500" alt="Sequential_writes_160K" src="https://github.com/user-attachments/assets/8d7bef9b-6e48-4f26-8980-1a01db97e647" />
 <img width="800" height="500" alt="Bulk_writes_160K_2" src="https://github.com/user-attachments/assets/495106d5-019e-4584-bade-38f43aaf8feb" />
 
 
-
-
-
 ## HEALPix Tile Sharding Versus Id Hash Sharding
 
-
-
-
-To test the performance difference between the same database sharded on HEALPix tiles 
+Given sky coordinates, calculating a HEALPix tiling is very fast using Astropy. Thus, HEALPix tile sharding has only slightly more overhead cost than id hash sharding. However, HEALPix sharding introduces cone search inefficiencies displayed below. 
 
 <img width="2400" height="576" alt="id_hash_sharding cone search 0 1 rad" src="https://github.com/user-attachments/assets/4809f9fd-0bc7-46a0-8166-eacd57369512" />
 <img width="2431" height="580" alt="HEALPix_sharding cone search 0 1 rad" src="https://github.com/user-attachments/assets/3e8f51a7-137a-472c-8994-d0c7f043e6ec" />
-
-
 <img width="800" height="500" alt="id hash sharding vs HEALPix tile sharding cone search 0 1 rad" src="https://github.com/user-attachments/assets/f5932635-831c-49d4-90d4-aaba4b2cda4c" />
+
+The 
