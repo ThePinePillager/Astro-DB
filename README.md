@@ -56,4 +56,4 @@ Note: there is a slight discrepancy in the number of documents returned, with th
 ### Comparing query runtime
 <img width="800" height="500" alt="id hash sharding vs HEALPix tile sharding cone search 0 1 rad" src="https://github.com/user-attachments/assets/f5932635-831c-49d4-90d4-aaba4b2cda4c" />
 
-The id hash sharding 
+The id hash sharding performs cone searches significantly quicker than worst-case HEALPix tile sharding. This is likely because id hashing stores events on random shards without considering location, whereas HEALPix tile sharding is likely to place neighboring events in the same tile, on the same shard. Cone searches on one shard are slower than cone searches spread conmcurrently across multiple shards.
