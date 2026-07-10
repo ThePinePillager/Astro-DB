@@ -2,7 +2,7 @@
 
 ## Preliminary Information
 
-We're constructing a prototype for a Mongo database that can handle 100 million event data insertions a night while maintaining fast cone search speeds. To achieve this, 
+We're constructing a prototype for a Mongo database that can handle 100 million event data insertions a night while maintaining fast cone search speeds. To achieve this, we're testing database sharding strategies and the utility of the 2dsphere index.
 
 ## Cone Searches
 
