@@ -51,7 +51,7 @@ The query: {
 ### HEALPix tile sharding
 <img width="2431" height="580" alt="HEALPix_sharding cone search 0 1 rad" src="https://github.com/user-attachments/assets/3e8f51a7-137a-472c-8994-d0c7f043e6ec" />
 
-Note: there is a slight discrepancy in the number of documents returned, with the HEALPix sharded database returning slightly more. This is because I used this particular database when performing a small insertion test. This will have only impacted the final result seen here by a couple ms at most. 
+Note: there is a slight discrepancy in the number of documents returned, with the HEALPix sharded database returning slightly more. This is because I used this particular database when performing a small insertion test between HEALPix sharding and id hash sharding (on an unrelated database). This will have only impacted the final result seen here by a couple ms at most. However, insertion times were almost identical.
 
 ### Comparing query runtime
 <img width="800" height="500" alt="id hash sharding vs HEALPix tile sharding cone search 0 1 rad" src="https://github.com/user-attachments/assets/f5932635-831c-49d4-90d4-aaba4b2cda4c" />
