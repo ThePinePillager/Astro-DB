@@ -19,4 +19,5 @@
 
 
 <img width="800" height="500" alt="Sequential_writes_160K" src="https://github.com/user-attachments/assets/8d7bef9b-6e48-4f26-8980-1a01db97e647" />
-<img width="800" height="500" alt="Bulk_writes_160K" src="https://github.com/user-attachments/assets/9f5c15d7-16cc-4448-8774-1e5f4c31d473" />
+<img width="800" height="500" alt="Bulk_writes_160K_2" src="https://github.com/user-attachments/assets/495106d5-019e-4584-bade-38f43aaf8feb" />
+
