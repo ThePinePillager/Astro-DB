@@ -37,8 +37,21 @@ Because all shards reside on a single laptop SSD, insertion data in this section
 
 Given sky coordinates, calculating a HEALPix tiling is very fast using Astropy. Thus, HEALPix tile sharding has only slightly more overhead cost than id hash sharding. However, HEALPix sharding introduces cone search inefficiencies displayed below. 
 
+The query: {
+	sphere_coordinates: {
+		$geoWithin: {
+			$centerSphere: [[50, -50], 0.1]
+		}
+	}
+}
+
+### id hash sharding
 <img width="2400" height="576" alt="id_hash_sharding cone search 0 1 rad" src="https://github.com/user-attachments/assets/4809f9fd-0bc7-46a0-8166-eacd57369512" />
+
+### HEALPix tile sharding
 <img width="2431" height="580" alt="HEALPix_sharding cone search 0 1 rad" src="https://github.com/user-attachments/assets/3e8f51a7-137a-472c-8994-d0c7f043e6ec" />
+
+### Comparing query runtime
 <img width="800" height="500" alt="id hash sharding vs HEALPix tile sharding cone search 0 1 rad" src="https://github.com/user-attachments/assets/f5932635-831c-49d4-90d4-aaba4b2cda4c" />
 
-The 
+The id hash sharding 
