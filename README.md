@@ -5,6 +5,8 @@
 We're constructing a prototype for a Mongo database that can handle 100 million event data insertions a night while maintaining fast cone search speeds. To achieve this, we're testing database sharding strategies and the utility of the 2dsphere index.
 To shard a database in MongoDB, one must specify a shard key, which must correspond to an index on that database. The 2dsphere index and the sharding index are different indexes with different goals. The 2dsphere index maps event locations on a sphere, which is useful for cone searches.
 
+All databases used for testing have between 2 and 3 million documents.
+
 ## Cone Searches
 
 All sharded databases tested within this section and the "Writes" section are sharded using an id hash index. There is more data on shard index selection below.
