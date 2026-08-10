@@ -1,11 +1,11 @@
-# Astro-DB
+# Astro-DB Section 1
 
 ## Preliminary Information
 
 We're constructing a prototype for a Mongo database that can handle 100 million event data insertions a night while maintaining fast cone search speeds. To achieve this, we're testing database sharding strategies and the utility of the 2dsphere index.
 To shard a database in MongoDB, one must specify a shard key, which must correspond to an index on that database. The 2dsphere index and the sharding index are different indexes with different goals. The 2dsphere index maps event locations on a sphere, which is useful for cone searches.
 
-All databases used for testing have between 2 and 3 million documents.
+All databases used for testing in this section have between 2 and 3 million documents.
 
 ## Cone Searches
 
@@ -61,4 +61,20 @@ Note: there is a slight discrepancy in the number of documents returned, with th
 The id hash sharding performs cone searches significantly quicker than worst-case HEALPix tile sharding. This is likely because id hashing stores events on random shards without considering location, whereas HEALPix tile sharding is likely to place neighboring events in the same tile, on the same shard. Cone searches on one shard are slower than cone searches spread concurrently across multiple shards. Ultimately, choosing between id hash sharding and HEALPix tile sharding is choosing between scatter-gather cone searches (fast, but potential cons) and more targeted cone searches. 
 
 -Note: id hash sharding forces scatter-gather searches on cone searches. Unfortunately, we may need to deal with scatter-gather searches on many of our more complicated queries, but it may be a good idea to shard instead on ranged RA and DEC values when our shards actually live on different machines.
+
+
+
+# Astro-DB Section 2
+
+## Updates
+
+The new testing database has 23 million real-world documents. It is the DESI_DR1 collection in the boom database, if anyone's interested. Cone searches in this database use the same query used above for cone searches, though the variable names change according to the variable names in DESI_DR1. Cone searches here behave nearly identically to cone searches on the smaller testing databases, so there is no new interesting data there. However, multithreaded cone searches and many other queries will be tested on DESI_DR1.
+
+## Multithreading
+
+### A Note on Query Load Balancing
+
+MongoDB actually provides robust query load balancer through mongos instances. Using a third party query load balancer is discouraged. More information [here](https://stackoverflow.com/questions/19442351/load-balancing-between-mongos). 
+
+
 
