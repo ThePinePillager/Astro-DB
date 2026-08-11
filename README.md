@@ -81,27 +81,27 @@ To enable query load balancing on a sharded database with multiple mongos instan
 ### Naive Cone Search Multithreading
 
 Using the DESI_DR1 collection, I ran a series of randomized-coordinate 0.1-rad cone searches on 1, 10, 100, 1000, and 10000 threads. While there were four mongos instances running, the first test connected only to one of them, the second connected to two, and the third connected to all four. The results are as follows: 
-
-Test 1:
-{"uri": "mongodb://localhost:27022/", "number_of_threads": 1, "time_taken": 0.019248900000093272}
-{"uri": "mongodb://localhost:27022/", "number_of_threads": 10, "time_taken": 0.03129480000006879}
-{"uri": "mongodb://localhost:27022/", "number_of_threads": 100, "time_taken": 0.07807880000018486}
-{"uri": "mongodb://localhost:27022/", "number_of_threads": 1000, "time_taken": 0.80679229999987}
-{"uri": "mongodb://localhost:27022/", "number_of_threads": 10000, "time_taken": 8.418987500000185}
-
-Test 2:
-{"uri": "mongodb://localhost:27022,localhost:27023/", "number_of_threads": 1, "time_taken": 0.019448799999736366}
-{"uri": "mongodb://localhost:27022,localhost:27023/", "number_of_threads": 10, "time_taken": 0.021528900000703288}
-{"uri": "mongodb://localhost:27022,localhost:27023/", "number_of_threads": 100, "time_taken": 0.07406969999919966}
-{"uri": "mongodb://localhost:27022,localhost:27023/", "number_of_threads": 1000, "time_taken": 0.7760166999996727}
-{"uri": "mongodb://localhost:27022,localhost:27023/", "number_of_threads": 10000, "time_taken": 8.078142299999854}
-
-Test 3:
-{"uri": "mongodb://localhost:27022,localhost:27023,localhost:27024,localhost:27025/", "number_of_threads": 1, "time_taken": 0.03964610000002722}
-{"uri": "mongodb://localhost:27022,localhost:27023,localhost:27024,localhost:27025/", "number_of_threads": 10, "time_taken": 0.03181660000063857}
-{"uri": "mongodb://localhost:27022,localhost:27023,localhost:27024,localhost:27025/", "number_of_threads": 100, "time_taken": 0.09383559999969293}
-{"uri": "mongodb://localhost:27022,localhost:27023,localhost:27024,localhost:27025/", "number_of_threads": 1000, "time_taken": 0.7796668999999383}
-{"uri": "mongodb://localhost:27022,localhost:27023,localhost:27024,localhost:27025/", "number_of_threads": 10000, "time_taken": 8.323118100000102}
+     
+Test 1:    
+{"uri": "mongodb://localhost:27022/", "number_of_threads": 1, "time_taken": 0.019248900000093272}   
+{"uri": "mongodb://localhost:27022/", "number_of_threads": 10, "time_taken": 0.03129480000006879}    
+{"uri": "mongodb://localhost:27022/", "number_of_threads": 100, "time_taken": 0.07807880000018486}    
+{"uri": "mongodb://localhost:27022/", "number_of_threads": 1000, "time_taken": 0.80679229999987}    
+{"uri": "mongodb://localhost:27022/", "number_of_threads": 10000, "time_taken": 8.418987500000185}    
+    
+Test 2:    
+{"uri": "mongodb://localhost:27022,localhost:27023/", "number_of_threads": 1, "time_taken": 0.019448799999736366}    
+{"uri": "mongodb://localhost:27022,localhost:27023/", "number_of_threads": 10, "time_taken": 0.021528900000703288}    
+{"uri": "mongodb://localhost:27022,localhost:27023/", "number_of_threads": 100, "time_taken": 0.07406969999919966}    
+{"uri": "mongodb://localhost:27022,localhost:27023/", "number_of_threads": 1000, "time_taken": 0.7760166999996727}    
+{"uri": "mongodb://localhost:27022,localhost:27023/", "number_of_threads": 10000, "time_taken": 8.078142299999854}    
+    
+Test 3:    
+{"uri": "mongodb://localhost:27022,localhost:27023,localhost:27024,localhost:27025/", "number_of_threads": 1, "time_taken": 0.03964610000002722}    
+{"uri": "mongodb://localhost:27022,localhost:27023,localhost:27024,localhost:27025/", "number_of_threads": 10, "time_taken": 0.03181660000063857}    
+{"uri": "mongodb://localhost:27022,localhost:27023,localhost:27024,localhost:27025/", "number_of_threads": 100, "time_taken": 0.09383559999969293}    
+{"uri": "mongodb://localhost:27022,localhost:27023,localhost:27024,localhost:27025/", "number_of_threads": 1000, "time_taken": 0.7796668999999383}    
+{"uri": "mongodb://localhost:27022,localhost:27023,localhost:27024,localhost:27025/", "number_of_threads": 10000, "time_taken": 8.323118100000102}    
 
 
 
