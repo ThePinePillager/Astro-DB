@@ -80,7 +80,7 @@ To enable query load balancing on a sharded database with multiple mongos instan
 
 ### Naive Cone Search Multithreading
 
-Using the DESI_DR1 collection, I ran a series of randomized-coordinate 0.1-rad cone searches on 1, 10, 100, 1000, and 10000 threads. While there were four mongos instances running, the first test connected only to one of them, the second connected to two, and the third connected to all four. The results are as follows: 
+Using the DESI_DR1 collection, I ran a series of randomized-coordinate 0.1-rad cone searches on 1, 10, 100, 1000, and 10000 threads. While there were four mongos instances running, the first test connected only to one of them, the second connected to two, and the third connected to all four. The results are as follows (note that time_taken is in seconds): 
      
 Test 1:    
 {"uri": "mongodb://localhost:27022/", "number_of_threads": 1, "time_taken": 0.019248900000093272}   
@@ -102,6 +102,8 @@ Test 3:
 {"uri": "mongodb://localhost:27022,localhost:27023,localhost:27024,localhost:27025/", "number_of_threads": 100, "time_taken": 0.09383559999969293}    
 {"uri": "mongodb://localhost:27022,localhost:27023,localhost:27024,localhost:27025/", "number_of_threads": 1000, "time_taken": 0.7796668999999383}    
 {"uri": "mongodb://localhost:27022,localhost:27023,localhost:27024,localhost:27025/", "number_of_threads": 10000, "time_taken": 8.323118100000102}    
+
+While performance improves slightly when going from one to two mongos instances, it then degrades when going from two to four. This isn't surprising though, as we're mostly just increasing overhead without adding new computational resources. It's generally recommended to have one mongos instance per server, which probably means one mongos per shard.
 
 
 
