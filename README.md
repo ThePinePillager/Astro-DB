@@ -76,5 +76,7 @@ The new testing database has 23 million real-world documents. It is the DESI_DR1
 
 MongoDB actually provides robust query load balancer through mongos instances. Using a third party query load balancer is discouraged. More information [here](https://stackoverflow.com/questions/19442351/load-balancing-between-mongos). 
 
+To enable query load balancing on a sharded database with multiple mongos instances, simply include every mongos instance in the connection URI as follows: "mongodb://localhost:27022,localhost:27023,localhost:27024,localhost:27025/", where ip:port is the ip and port number of the mongos instance. MongoDB will then route queries across all mongos instances fairly evenly, at least on my machine. To test this, one can run "mongostat --port (port number)" in terminal for all mongos instances and look for the number of queries executed.
+
 
 
