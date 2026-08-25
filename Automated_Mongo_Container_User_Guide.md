@@ -47,7 +47,6 @@ From: ubuntu:24.04
 
 %environment
     export LC_ALL=C
-    export MONGO_DATA_DIR=/data/db
 
 %runscript
     exec /opt/mongodb/runfile.sh
@@ -58,7 +57,7 @@ At the top, I dictate that the image run on ubuntu version 24.04, and the infras
 
 ### The %files Section
 This section copies the local file at /mnt/e/Program-Files/Apptainer_Images/run_scripts/DB_test_run.sh onto the container at /opt/mongodb/runfile.sh, so the container can reference it later. This is a custom bash script that sets up our sharded cluster and database, but more on that later.
-
+advis
 ### The %post Section 
 We start with the first line, which tells ubuntu to be silent when downloading packages. 
 
@@ -73,7 +72,7 @@ On line 43, I ensure that the runfile copied to the image file in the %files sec
 In lines 45 and 46, I clean up temporary files I no longer need. This is to keep the image file as compact as possible.
 
 ### The %environment Section
-
+This is where environment variables are defined. The only one we need sets some local variable, which the apptainer documentation advises to set.
 
 
 ### The %runscript Section
