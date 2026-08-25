@@ -3,7 +3,7 @@
 ### Apptainer Setup
  [Apptainer installation page](https://apptainer.org/user-docs/master/quick_start.html#installation)
 
-## Step 1
+## Step 1, Creating the Image File
 
 It is assumed that apptainer now works on your system, meaning you can build image files and run them as containers. If apptainer doesn't work properly, please refer to the link above. 
 
@@ -74,8 +74,175 @@ In lines 45 and 46, I clean up temporary files I no longer need. This is to keep
 
 ### The %environment Section
 
+
+
 ### The %runscript Section
 I run the runfile copied into the image file in the %files section.
+
+
+
+## Step 2, Creating the Runfile
+
+My runfile is as follows:
+```
+#!/bin/bash
+
+mkdir -p /shard_cluster/configshrd
+mkdir -p /shard_cluster/shrdsvr_1
+mkdir -p /shard_cluster/shrdsvr_2
+mkdir -p /shard_cluster/shrdsvr_3
+mkdir -p /shard_cluster/shrdsvr_4
+mkdir -p /shard_cluster/shrdsvr_5
+mkdir -p /shard_cluster/shrdsvr_6
+mkdir -p /raw_data
+
+wait_for_mongo() {
+    local port="$1"
+
+    echo "Waiting for MongoDB on port $port..."
+
+    until mongosh \
+        --port "$port" \
+        --quiet \
+        --eval 'db.adminCommand({ping: 1}).ok' \
+        2>/dev/null | grep -q '^1$'   # asks Mongo if it's working, redirects stderr into linux's garbage can, then extracts Mongo's response and checks if it's *only* working and nothing else.
+    do
+        sleep 1
+    done
+
+    echo "MongoDB on port $port is ready."
+}
+
+rs_initialize() {
+    local port="$1"
+    local id="$2"
+
+    mongosh --port "$port" --eval "
+        rs.initiate({
+            _id: '$id',
+            members: [
+                { _id: 0, host: '127.0.0.1:$port' }
+            ]
+        })
+    "
+}
+
+echo "Starting MongoDB cluster..."
+
+
+echo "Starting MongoDB..."
+
+mongod \
+    --dbpath /shard_cluster/configshrd \
+    --configsvr \
+    --replSet configsvr \
+    --bind_ip 127.0.0.1 \
+    --port 27050 \
+    --fork \
+    --logpath /tmp/configsvr.log
+
+wait_for_mongo 27050
+
+rs_initialize 27050 configsvr
+
+mongod \
+    --shardsvr \
+    --replSet shrdsvr_1 \
+    --port 27051 \
+    --dbpath /shard_cluster/shrdsvr_1 \
+    --fork \
+    --logpath /tmp/shrdsvr_1.log
+
+mongod \
+    --shardsvr \
+    --replSet shrdsvr_2 \
+    --port 27052 \
+    --dbpath /shard_cluster/shrdsvr_2 \
+    --fork \
+    --logpath /tmp/shrdsvr_2.log
+
+mongod \
+    --shardsvr \
+    --replSet shrdsvr_3 \
+    --port 27053 \
+    --dbpath /shard_cluster/shrdsvr_3 \
+    --fork \
+    --logpath /tmp/shrdsvr_3.log
+
+mongod \
+    --shardsvr \
+    --replSet shrdsvr_4 \
+    --port 27054 \
+    --dbpath /shard_cluster/shrdsvr_4 \
+    --fork \
+    --logpath /tmp/shrdsvr_4.log
+
+mongod \
+    --shardsvr \
+    --replSet shrdsvr_5 \
+    --port 27055 \
+    --dbpath /shard_cluster/shrdsvr_5 \
+    --fork \
+    --logpath /tmp/shrdsvr_5.log
+
+mongod \
+    --shardsvr \
+    --replSet shrdsvr_6 \
+    --port 27056 \
+    --dbpath /shard_cluster/shrdsvr_6 \
+    --fork \
+    --logpath /tmp/shrdsvr_6.log
+
+wait_for_mongo 27051
+wait_for_mongo 27052
+wait_for_mongo 27053
+wait_for_mongo 27054
+wait_for_mongo 27055
+wait_for_mongo 27056
+
+rs_initialize 27051 shrdsvr_1
+rs_initialize 27052 shrdsvr_2
+rs_initialize 27053 shrdsvr_3
+rs_initialize 27054 shrdsvr_4
+rs_initialize 27055 shrdsvr_5
+rs_initialize 27056 shrdsvr_6
+
+mongos \
+    --configdb configsvr/localhost:27050 \
+    --port 27060 \
+    --bind_ip 127.0.0.1 \
+    --fork \
+    --logpath /tmp/mongos.log
+
+wait_for_mongo 27060
+
+mongosh --port 27060 --eval '
+    sh.addShard("shrdsvr_1/127.0.0.1:27051");
+    sh.addShard("shrdsvr_2/127.0.0.1:27052");
+    sh.addShard("shrdsvr_3/127.0.0.1:27053");
+    sh.addShard("shrdsvr_4/127.0.0.1:27054");
+    sh.addShard("shrdsvr_5/127.0.0.1:27055");
+    sh.addShard("shrdsvr_6/127.0.0.1:27056");
+
+    db = db.getSiblingDB("testDB");
+    db.testCollection.createIndex({_id: "hashed"});
+    sh.shardCollection("testDB.testCollection", {_id: "hashed"});
+'
+
+mongorestore --host 127.0.0.1 --port 27060 \
+    --archive="/raw_data/boom_no_cutouts.archive" \
+    # --nsFrom="boom.DESI_DR1" \
+    # --nsTo="testDB.testCollection"
+
+mongosh --port 27060 --quiet --eval 'sh.status()'
+
+#use testDB
+
+#mongoimport --db=testDB --collection=testCollection --file="/mnt/e/Program-Files/LSST_alerts/boom_no_cutouts.archive"
+
+sleep infinity
+```
+
 
 
 
