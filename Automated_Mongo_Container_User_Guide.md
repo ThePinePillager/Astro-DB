@@ -83,7 +83,7 @@ I run the runfile copied into the image file in the %files section.
 
 ## Step 2: Creating the Runfile
 
-My runfile is as follows:
+My runfile is as follows (this part will be updated in the future. As for now, the [Mongo documentation](https://www.mongodb.com/docs/manual/) should help explain some of it:
 ```
 #!/bin/bash
 
@@ -235,12 +235,6 @@ mongorestore --host 127.0.0.1 --port 27060 \
     # --nsTo="testDB.testCollection"
 
 mongosh --port 27060 --quiet --eval 'sh.status()'
-
-#use testDB
-
-#mongoimport --db=testDB --collection=testCollection --file="/mnt/e/Program-Files/LSST_alerts/boom_no_cutouts.archive"
-
-sleep infinity
 ```
 
 
