@@ -3,7 +3,7 @@
 ### Apptainer Setup
  [Apptainer installation page](https://apptainer.org/user-docs/master/quick_start.html#installation)
 
-## Step 1, Creating the Image File
+## Step 1: Creating the Image File
 
 It is assumed that apptainer now works on your system, meaning you can build image files and run them as containers. If apptainer doesn't work properly, please refer to the link above. 
 
@@ -81,7 +81,7 @@ I run the runfile copied into the image file in the %files section.
 
 
 
-## Step 2, Creating the Runfile
+## Step 2: Creating the Runfile
 
 My runfile is as follows:
 ```
@@ -245,5 +245,21 @@ sleep infinity
 
 
 
+
+
+## Step 3: Running the Container
+
+### To build the image file:
+
+apptainer build (designated location for image file) (path to .def file)
+
+### To run the container:
+
+apptainer run \
+    --bind (designated path to directory on host for Mongod processes):/shard_cluster \
+    --bind (path to Mongo .archive file, or jsonl file):/raw_data \
+    (path to image file) 
+
+ 
 
 
