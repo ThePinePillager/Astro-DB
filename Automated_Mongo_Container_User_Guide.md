@@ -131,7 +131,10 @@ rs_initialize() {
 }
 
 ```
+I built these two shell commands to reduce redundant code.
+The top function tests when a mongod instance at the user-defined port is operational, and is to be used when connecting to newly-started mongod instances.
 
+The bottom function initializes a replica set, with a user defined id, and with only one mongod instance at a user defined port.
 ```
 
 echo "Starting MongoDB cluster..."
@@ -147,6 +150,11 @@ mongod \
     --port 27050 \
     --fork \
     --logpath /tmp/configsvr.log
+
+```
+As a note, the above command creates a mongod instance with certain attributes. Important attributes include the path where it should store its own data, which must be a mountable to whatever host runs the container.
+We also tell the mongod instance that it is the config server for our sharded cluster (via --configsvr. For a shard server, we use --shardsvr). --bind_ip 127.0.0.1 just binds this mongod instance to the host machine (different from mounting the storage path).
+```
 
 wait_for_mongo 27050
 
@@ -222,6 +230,11 @@ mongos \
     --logpath /tmp/mongos.log
 
 wait_for_mongo 27060
+
+
+```
+The above section creates our entire sharded cluster, which includes a config server, six shard servers, and one mongos server. Further information on shard clusters can be accessed [here](https://www.mongodb.com/docs/manual/sharding/)
+```
 
 mongosh --port 27060 --eval '
     sh.addShard("shrdsvr_1/127.0.0.1:27051");
