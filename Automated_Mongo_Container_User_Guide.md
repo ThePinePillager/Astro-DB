@@ -237,8 +237,6 @@ A quick note on building a mongos instance, the line --configdb configsvr/localh
 
 The above section creates our entire sharded cluster, which includes a config server, six shard servers, and one mongos server. Further information on shard clusters can be accessed [here](https://www.mongodb.com/docs/manual/sharding/). 
 The order at which the sharded cluster is built is important. First, build and initialize the config server and replica set, then build and initialize all six shard servers and replica sets, and finally build the mongos instance, which doesn't need a replica set.
-Executing the container after this step (providing the mount points, execution instructions at the bottom of this guide) should allow one to connect to the sharded cluster in MongoDB Compass with the following connection URI: mongodb://localhost:27060/. 
-The port number 27060 isn't special here, it's just what we set the mongos port number to.
 
 As a note, it is important that all servers, including mongod and mongos, have their own unique port number.
 ```
@@ -257,17 +255,25 @@ mongosh --port 27060 --eval '
 '
 
 ```
+In the above section, we open the MongoDB shell (mongosh), connect it to our mongos instance, and run cluster commands. 
+sh.addShard("shrdsvr_1/127.0.0.1:27051"); tells the cluster to add a shard with replica set name shrdsvr_1 living on localhost with port 27051. In a replica set with more than one server, each port number must be added (comma separated, I believe) after the first.
 
+Executing the container after this step (providing the mount points, execution instructions at the bottom of this guide) should allow one to connect to the sharded cluster in MongoDB Compass with the following connection URI: mongodb://localhost:27060/. 
+The port number 27060 isn't special here, it's just what we set the mongos port number to.
+
+After this, db = db.getSiblingDB("testDB"); establishes a new database, named "testDB", on the sharded cluster. getSiblingDB is the function used to create a new database through mongosh. 
+On the next line, we establish an index for the shard key on our target collection. Since we haven't yet created the collection "testCollection", it is automatically made. Here, I use a hash index on the id. 
+On the last line, we shard "testCollection", using the hashed id index as the shard key. We are now ready to insert data.
 ```
 
 mongorestore --host 127.0.0.1 --port 27060 \
     --archive="/raw_data/boom_no_cutouts.archive" \
-    # --nsFrom="boom.DESI_DR1" \
-    # --nsTo="testDB.testCollection"
+    --nsFrom="boom.DESI_DR1" \
+    --nsTo="testDB.testCollection"
 
 mongosh --port 27060 --quiet --eval 'sh.status()'
 ```
-
+Finally, we restore a collection with data into our empty "testCollection". As the data is inserted, it is automatically distributed according to the shard key. This means that we won't need to redistribute the data later, saving significant time.
 
 
 
