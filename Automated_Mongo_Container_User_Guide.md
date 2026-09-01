@@ -82,7 +82,7 @@ I run the runfile copied into the image file in the %files section.
 
 ## Step 2: Creating the Runfile
 
-My runfile is as follows (this part will be updated in the future. As for now, the [Mongo documentation](https://www.mongodb.com/docs/manual/) should help explain some of it:
+I explain the contents of my runfile below. If there is any confusion, the [Mongo documentation](https://www.mongodb.com/docs/manual/) is a great reference.
 ```
 #!/bin/bash
 
