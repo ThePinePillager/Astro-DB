@@ -94,7 +94,11 @@ mkdir -p /shard_cluster/shrdsvr_4
 mkdir -p /shard_cluster/shrdsvr_5
 mkdir -p /shard_cluster/shrdsvr_6
 mkdir -p /raw_data
+```
+The shebang, which tells linux to execute each line as a shell command, is at the top.
 
+All the mkdir commands create mount points in the container, which are directories that the container can use that must be "mounted" to directories on the host (this can be done when executing the container using the --bind flag).
+```
 wait_for_mongo() {
     local port="$1"
 
@@ -125,6 +129,10 @@ rs_initialize() {
         })
     "
 }
+
+```
+
+```
 
 echo "Starting MongoDB cluster..."
 
