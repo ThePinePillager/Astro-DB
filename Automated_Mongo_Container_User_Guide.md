@@ -233,7 +233,14 @@ wait_for_mongo 27060
 
 
 ```
-The above section creates our entire sharded cluster, which includes a config server, six shard servers, and one mongos server. Further information on shard clusters can be accessed [here](https://www.mongodb.com/docs/manual/sharding/)
+A quick note on building a mongos instance, the line --configdb configsvr/localhost:27050 tells the mongos instance what config server to connect to and where that config server lives.
+
+The above section creates our entire sharded cluster, which includes a config server, six shard servers, and one mongos server. Further information on shard clusters can be accessed [here](https://www.mongodb.com/docs/manual/sharding/). 
+The order at which the sharded cluster is built is important. First, build and initialize the config server and replica set, then build and initialize all six shard servers and replica sets, and finally build the mongos instance, which doesn't need a replica set.
+Executing the container after this step (providing the mount points, execution instructions at the bottom of this guide) should allow one to connect to the sharded cluster in MongoDB Compass with the following connection URI: mongodb://localhost:27060/. 
+The port number 27060 isn't special here, it's just what we set the mongos port number to.
+
+As a note, it is important that all servers, including mongod and mongos, have their own unique port number.
 ```
 
 mongosh --port 27060 --eval '
@@ -248,6 +255,10 @@ mongosh --port 27060 --eval '
     db.testCollection.createIndex({_id: "hashed"});
     sh.shardCollection("testDB.testCollection", {_id: "hashed"});
 '
+
+```
+
+```
 
 mongorestore --host 127.0.0.1 --port 27060 \
     --archive="/raw_data/boom_no_cutouts.archive" \
